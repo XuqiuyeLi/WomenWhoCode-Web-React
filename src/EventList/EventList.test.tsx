@@ -2,10 +2,12 @@ import React from 'react'
 import {render, screen} from '@testing-library/react'
 import EventList from './EventList'
 import {waitForElement} from '@testing-library/dom'
+import StubEventRepo from '../Repo/StubEventRepo'
 
 describe('EventList', () => {
   it('displays the events title', () => {
-    const {getByText} = render(<EventList/>)
+    const stubEventRepo = new StubEventRepo()
+    const {getByText} = render(<EventList eventRepo={stubEventRepo}/>)
 
     const title = getByText('Events')
 
@@ -13,14 +15,7 @@ describe('EventList', () => {
   })
 
   it('displays events', async() => {
-    const stubEventRepo = {
-      getList: () => {
-        return Promise.resolve([
-          {id: 1, name: 'First Event'},
-          {id: 2, name: 'Second Event'}
-        ])
-      }
-    }
+    const stubEventRepo = new StubEventRepo()
 
     render(<EventList eventRepo={stubEventRepo}/>)
     await waitForElement(() => screen.getByText('First Event'))

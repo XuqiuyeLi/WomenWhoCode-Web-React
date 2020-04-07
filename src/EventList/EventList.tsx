@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react'
-import NetworkEventRepo from "../Repo/NetworkEventRepo";
 import WWCEvent from "../Entity/WWCEvent";
+import EventRepo from "../Repo/EventRepo";
 
 type EventListProps = {
-    eventRepo: NetworkEventRepo
+    eventRepo: EventRepo
 }
 
 function EventList(props: EventListProps) {

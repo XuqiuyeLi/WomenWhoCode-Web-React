@@ -8,7 +8,6 @@ class StubEventRepo implements EventRepo{
             new WWCEvent(2,'Second Event')
         ])
     }
-
 }
 
 export default StubEventRepo

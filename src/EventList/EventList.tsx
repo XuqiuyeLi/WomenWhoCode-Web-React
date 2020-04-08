@@ -12,7 +12,7 @@ function EventList(props: EventListProps) {
     useEffect(() => {
         props.eventRepo.getList()
             .then(events => setEvents(events))
-    }, [])
+    }, [props.eventRepo])
 
     return (
         <div>

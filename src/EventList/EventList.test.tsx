@@ -1,17 +1,16 @@
 import React from 'react'
-import {render, screen} from '@testing-library/react'
+import {render, screen, wait} from '@testing-library/react'
 import EventList from './EventList'
 import {waitForElement} from '@testing-library/dom'
 import StubEventRepo from '../Repo/StubEventRepo'
 
 describe('EventList', () => {
-  it('displays the events title', () => {
+  it('displays the events title', async () => {
     const stubEventRepo = new StubEventRepo()
+
     const {getByText} = render(<EventList eventRepo={stubEventRepo}/>)
 
-    const title = getByText('Events')
-
-    expect(title).toBeInTheDocument()
+    await wait(() =>  expect(getByText('Events')).toBeInTheDocument())
   })
 
   it('displays events', async() => {
@@ -19,9 +18,6 @@ describe('EventList', () => {
 
     render(<EventList eventRepo={stubEventRepo}/>)
     await waitForElement(() => screen.getByText('First Event'))
-    const firstEventName = screen.getByText('First Event')
-
-    expect(firstEventName).toBeInTheDocument()
     expect(screen.getByText('Code Chrysalis')).toBeInTheDocument()
     expect(screen.getByText('Apr 11, Sat')).toBeInTheDocument()
     expect(screen.getByText('9:00 AM - 5:30 PM')).toBeInTheDocument()

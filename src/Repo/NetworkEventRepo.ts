@@ -1,5 +1,5 @@
-import EventRepo from './EventRepo';
-import WWCEvent from '../Entity/WWCEvent';
+import EventRepo from './EventRepo'
+import WWCEvent from '../Entity/WWCEvent'
 
 class NetworkEventRepo implements EventRepo {
     private httpClient: HttpClient
@@ -9,7 +9,17 @@ class NetworkEventRepo implements EventRepo {
     }
 
     getList(): Promise<WWCEvent[]> {
-        return this.httpClient.httpFetch("http://localhost:8080/api/events/past")
+        return this.httpClient.httpFetch('http://localhost:8080/api/events/past')
+            .then(events => {
+                return events.map((event: any) => {
+                    return new WWCEvent(
+                        event.name,
+                        event.startDateTime,
+                        event.endDateTime,
+                        event.venue,
+                    )
+                })
+            })
     }
 }
 
@@ -19,12 +29,12 @@ export interface HttpClient {
 
 export class NetworkHttpClient implements HttpClient {
     httpFetch(url: string): Promise<any> {
-        return fetch("http://localhost:8080/api/events/past", {
+        return fetch('http://localhost:8080/api/events/past', {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Origin': 'http://localhost:3000'
-            }
+                'Origin': 'http://localhost:3000',
+            },
         })
             .then(res => res.json())
     }

@@ -1,13 +1,40 @@
-import NetworkEventRepo from "./NetworkEventRepo";
-import SpyHttpClient from "./SpyHttpClient";
+import NetworkEventRepo from './NetworkEventRepo'
+import SpyHttpClient from './SpyHttpClient'
+import WWCEvent from '../Entity/WWCEvent'
+import StubHttpClient from './StubHttpClient'
 
 describe('NetworkEventRepo', () => {
-    it('makes request with correct url', () => {
-        const spyHttpClient = new SpyHttpClient()
-        const repo = new NetworkEventRepo(spyHttpClient)
+    describe('getList', () => {
+        it('makes request with correct url', () => {
+            const spyHttpClient = new SpyHttpClient()
+            const repo = new NetworkEventRepo(spyHttpClient)
 
-        repo.getList()
+            repo.getList()
 
-        expect(spyHttpClient.request_url).toBe("http://localhost:8080/api/events/past")
+            expect(spyHttpClient.request_url).toBe('http://localhost:8080/api/events/past')
+        })
+
+        it('returns an array of WWCEvents', async () => {
+            const stubHttpClient = new StubHttpClient()
+            stubHttpClient.httpFetch_returnValue = [{
+                name: 'First Event',
+                startDateTime: '2020-04-11T09:00:00',
+                endDateTime: '2020-04-11T20:00:00',
+                venue: {name: 'Code Chrysalis'},
+            }]
+
+            const repo = new NetworkEventRepo(stubHttpClient)
+
+            const events = await repo.getList()
+            expect(events[0].constructor).toBe(WWCEvent)
+            expect(events).toStrictEqual([
+                new WWCEvent(
+                    'First Event',
+                    '2020-04-11T09:00:00',
+                    '2020-04-11T20:00:00',
+                    {name: 'Code Chrysalis'},
+                ),
+            ])
+        })
     })
 })

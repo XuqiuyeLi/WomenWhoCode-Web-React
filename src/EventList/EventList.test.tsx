@@ -22,5 +22,8 @@ describe('EventList', () => {
     const firstEventName = screen.getByText('First Event')
 
     expect(firstEventName).toBeInTheDocument()
+    expect(screen.getByText('Code Chrysalis')).toBeInTheDocument()
+    expect(screen.getByText('Apr 11, Sat')).toBeInTheDocument()
+    expect(screen.getByText('9:00 AM - 5:30 PM')).toBeInTheDocument()
   })
 })

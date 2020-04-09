@@ -13,6 +13,7 @@ class NetworkEventRepo implements EventRepo {
             .then(events => {
                 return events.map((event: any) => {
                     return new WWCEvent(
+                        event.id,
                         event.name,
                         event.startDateTime,
                         event.endDateTime,

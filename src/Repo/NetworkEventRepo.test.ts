@@ -17,6 +17,7 @@ describe('NetworkEventRepo', () => {
         it('returns an array of WWCEvents', async () => {
             const stubHttpClient = new StubHttpClient()
             stubHttpClient.httpFetch_returnValue = [{
+                id:"1",
                 name: 'First Event',
                 startDateTime: '2020-04-11T09:00:00',
                 endDateTime: '2020-04-11T20:00:00',
@@ -29,6 +30,7 @@ describe('NetworkEventRepo', () => {
             expect(events[0].constructor).toBe(WWCEvent)
             expect(events).toStrictEqual([
                 new WWCEvent(
+                    "1",
                     'First Event',
                     '2020-04-11T09:00:00',
                     '2020-04-11T20:00:00',

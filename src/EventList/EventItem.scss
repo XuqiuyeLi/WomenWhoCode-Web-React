@@ -8,6 +8,10 @@ body {
   background-color: white;
   margin: 36px 100px 36px 100px;
   padding: 16px 0px 16px 16px;
+  &:hover {
+    background-color: palegoldenrod;
+    cursor: pointer;
+  }
 
   .date {
     color: #33787B;
@@ -19,8 +23,8 @@ body {
     padding-bottom: 16px;
   }
 
-
   .location, .time {
     color: #3C4143;
   }
 }
+

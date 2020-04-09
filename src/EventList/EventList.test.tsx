@@ -18,6 +18,7 @@ describe('EventList', () => {
 
     render(<EventList eventRepo={stubEventRepo}/>)
     await waitForElement(() => screen.getByText('First Event'))
+
     expect(screen.getByText('Code Chrysalis')).toBeInTheDocument()
     expect(screen.getByText('Apr 11, Sat')).toBeInTheDocument()
     expect(screen.getByText('9:00 AM - 5:30 PM')).toBeInTheDocument()

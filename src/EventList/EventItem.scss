@@ -1,0 +1,26 @@
+body {
+  background-color: #F5F5F5;
+}
+
+.EventItem {
+  text-align: left;
+  border: solid cadetblue 1px;
+  background-color: white;
+  margin: 36px 100px 36px 100px;
+  padding: 16px 0px 16px 16px;
+
+  .date {
+    color: #33787B;
+  }
+
+  .title {
+    font-size: large;
+    font-weight: bold;
+    padding-bottom: 16px;
+  }
+
+
+  .location, .time {
+    color: #3C4143;
+  }
+}

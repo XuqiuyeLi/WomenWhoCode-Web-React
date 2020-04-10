@@ -38,6 +38,6 @@ describe('EventList', () => {
         const eventTitleElement = screen.getByText('First Event')
         fireEvent.click(eventTitleElement)
 
-        expect(spyRouter.redirectToEventDetailsPage_calledWith).toEqual(111)
+        expect(spyRouter.redirectToEventDetailsPage_calledWith).toEqual('111')
     })
 })

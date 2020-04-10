@@ -1,9 +1,9 @@
 import WWCRouter from './WWCRouter'
 
 class SpyWWCRouter implements WWCRouter {
-    redirectToEventDetailsPage_calledWith: Number = Number.MIN_VALUE
+    redirectToEventDetailsPage_calledWith?: string
 
-    redirectToEventDetailsPage(eventId: Number): void {
+    redirectToEventDetailsPage(eventId: string): void {
         this.redirectToEventDetailsPage_calledWith = eventId
     }
 }

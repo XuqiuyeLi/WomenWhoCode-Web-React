@@ -17,8 +17,7 @@ function EventList(props: EventListProps) {
             .then(events => setEvents(events))
     }, [props.eventRepo])
 
-    const eventClicked = (eventId: Number) => {
-        console.log('---clicked with id:', eventId)
+    const eventClicked = (eventId: string) => {
         props.router.redirectToEventDetailsPage(eventId)
     }
 
@@ -28,7 +27,6 @@ function EventList(props: EventListProps) {
             <div>
                 {
                     events.map((event: WWCEvent, i: number) => {
-                        // console.log(event.id)
                         return (
                             <div key={i} onClick={() => eventClicked(event.id)}>
                                 <EventItem event={event}/>

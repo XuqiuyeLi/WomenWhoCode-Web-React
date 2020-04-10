@@ -30,7 +30,7 @@ describe('NetworkEventRepo', () => {
             expect(events[0].constructor).toBe(WWCEvent)
             expect(events).toStrictEqual([
                 new WWCEvent(
-                    "1",
+                    '1',
                     'First Event',
                     '2020-04-11T09:00:00',
                     '2020-04-11T20:00:00',

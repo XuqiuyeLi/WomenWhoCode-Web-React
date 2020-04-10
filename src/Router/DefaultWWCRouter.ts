@@ -10,7 +10,7 @@ class DefaultWWCRouter implements WWCRouter{
         this.history = browserHistory
     }
 
-    redirectToEventDetailsPage(eventId: Number): void {
+    redirectToEventDetailsPage(eventId: string): void {
         this.history.push(`/events/${eventId}`)
     }
 }

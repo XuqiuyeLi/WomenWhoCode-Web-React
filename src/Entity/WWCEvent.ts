@@ -1,17 +1,17 @@
 class WWCEvent {
-    id: Number
+    id: string
     name: string
     startDateTime: Date
     endDateTime: Date
     venue: Venue
 
     constructor(
-        id: String,
+        id: string,
         name: string,
         startDateTime: string,
         endDateTime: string,
         venue: Venue) {
-        this.id = Number(id)
+        this.id = id
         this.name = name
         this.startDateTime = new Date(startDateTime)
         this.endDateTime = new Date(endDateTime)

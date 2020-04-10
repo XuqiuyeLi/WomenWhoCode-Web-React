@@ -1,5 +1,5 @@
 interface WWCRouter {
-    redirectToEventDetailsPage(eventId: Number): void
+    redirectToEventDetailsPage(eventId: string): void
 }
 
 export default WWCRouter

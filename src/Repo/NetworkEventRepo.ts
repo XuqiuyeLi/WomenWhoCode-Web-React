@@ -9,7 +9,7 @@ class NetworkEventRepo implements EventRepo {
     }
 
     getList(): Promise<WWCEvent[]> {
-        return this.httpClient.httpFetch('http://localhost:8080/api/events/past')
+        return this.httpClient.get('/api/events')
             .then(events => {
                 return events.map((event: any) => {
                     return new WWCEvent(
@@ -25,16 +25,20 @@ class NetworkEventRepo implements EventRepo {
 }
 
 export interface HttpClient {
-    httpFetch(url: string): Promise<any>
+    get(url: string): Promise<any>
 }
 
 export class NetworkHttpClient implements HttpClient {
-    httpFetch(url: string): Promise<any> {
-        return fetch('http://localhost:8080/api/events/past', {
+    private fetch: (input: RequestInfo, init?: RequestInit) => Promise<Response>
+    constructor(fetch: (input: RequestInfo, init?: RequestInit) => Promise<Response>) {
+        this.fetch = fetch
+    }
+
+    get(url: string): Promise<any> {
+        return this.fetch(url, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'Origin': 'http://localhost:3000',
             },
         })
             .then(res => res.json())

@@ -6,7 +6,7 @@ class StubHttpClient implements HttpClient{
     }
     private _httpFetch_returnValue: any
 
-    httpFetch(url: string): Promise<any> {
+    get(url: string): Promise<any> {
         return Promise.resolve(this._httpFetch_returnValue)
     }
 }

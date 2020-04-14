@@ -11,7 +11,7 @@ describe('NetworkEventRepo', () => {
 
             repo.getList()
 
-            expect(spyHttpClient.request_url).toBe('http://localhost:8080/api/events/past')
+            expect(spyHttpClient.request_url).toBe('/api/events')
         })
 
         it('returns an array of WWCEvents', async () => {

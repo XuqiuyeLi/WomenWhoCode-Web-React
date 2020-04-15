@@ -9,6 +9,10 @@ class StubHttpClient implements HttpClient{
     get(url: string): Promise<any> {
         return Promise.resolve(this._httpFetch_returnValue)
     }
+
+    post(url: string, body: object): Promise<void> {
+        return Promise.resolve();
+    }
 }
 
 export default StubHttpClient

@@ -1,22 +1,25 @@
 import React from 'react'
-import {fireEvent, render, screen} from '@testing-library/react'
+import {render, screen} from '@testing-library/react'
 import AddEventForm from './AddEventForm'
 import {SpyEventRepo} from '../Repo/SpyEventRepo'
 import userEvent from '@testing-library/user-event'
 import {NewWWCEvent} from '../Entity/WWCEvent'
+import {StaticRouter} from 'react-router-dom'
+import {StaticRouterContext} from 'react-router'
+import {Simulate} from 'react-dom/test-utils'
+import EventRepo from '../Repo/EventRepo'
 
 describe('AddEventForm', () => {
-    it('shows event title', () => {
-        const dummyRepo = {} as any
-        render(<AddEventForm eventRepo={dummyRepo}/>)
+    const dummyRepo = {} as any
+    it('shows page title', () => {
+        renderAddEventForm(dummyRepo)
 
 
-        expect(screen.getByText('Event Title')).toBeInTheDocument()
+        expect(screen.getByText('Add an Event')).toBeInTheDocument()
     })
 
     it('shows add event form', () => {
-        const dummyRepo = {} as any
-        render(<AddEventForm eventRepo={dummyRepo}/>)
+        renderAddEventForm(dummyRepo)
 
         expect(screen.getByLabelText('name:', {selector: 'input'}))
             .toBeInTheDocument()
@@ -24,21 +27,9 @@ describe('AddEventForm', () => {
             .toBeInTheDocument()
     })
 
-    it('submit clicked will call addEvent() on repo', () => {
-        const spyEventRepo = new SpyEventRepo()
-        render(<AddEventForm eventRepo={spyEventRepo}/>)
-
-
-        const submitButton = screen.getByText('Submit')
-        fireEvent.click(submitButton)
-
-
-        expect(spyEventRepo.addEvent_Was_Called).toBe(true)
-    })
-
     it('submit clicked passes input values', () => {
         const spyEventRepo = new SpyEventRepo()
-        render(<AddEventForm eventRepo={spyEventRepo}/>)
+        renderAddEventForm(spyEventRepo)
 
 
         userEvent.type(screen.getByLabelText('name:'), 'WTF is React?')
@@ -51,4 +42,36 @@ describe('AddEventForm', () => {
             new NewWWCEvent('WTF is React?', 'Code Chrysalis'),
         )
     })
+
+    it('redirects to home page after submit form', () => {
+        const routerContext: StaticRouterContext = {}
+        renderAddEventForm(new SpyEventRepo(), routerContext)
+
+
+        const submitButton = screen.getByText('Submit')
+        userEvent.click(submitButton)
+
+
+        expect(routerContext.url).toEqual('/')
+    })
+
+    it('submit form event default is prevented', () => {
+        renderAddEventForm(new SpyEventRepo())
+
+
+        const submitButton = screen.getByText('Submit')
+        let preventDefaultSpy = jest.fn()
+        Simulate.submit(submitButton, {preventDefault: preventDefaultSpy})
+
+
+        expect(preventDefaultSpy).toBeCalled()
+    })
 })
+
+function renderAddEventForm(eventRepo: EventRepo, context: StaticRouterContext = {}) {
+    render(
+        <StaticRouter context={context}>
+            <AddEventForm eventRepo={eventRepo}/>
+        </StaticRouter>,
+    )
+}

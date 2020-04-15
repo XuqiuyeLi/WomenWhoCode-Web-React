@@ -1,6 +1,6 @@
 import NetworkEventRepo from './NetworkEventRepo'
 import SpyHttpClient from './SpyHttpClient'
-import WWCEvent from '../Entity/WWCEvent'
+import WWCEvent, {NewWWCEvent} from '../Entity/WWCEvent'
 import StubHttpClient from './StubHttpClient'
 
 describe('NetworkEventRepo', () => {
@@ -11,7 +11,7 @@ describe('NetworkEventRepo', () => {
 
             repo.getList()
 
-            expect(spyHttpClient.request_url).toBe('/api/events')
+            expect(spyHttpClient.request_argument_url).toBe('/api/events')
         })
 
         it('returns an array of WWCEvents', async () => {
@@ -37,6 +37,19 @@ describe('NetworkEventRepo', () => {
                     {name: 'Code Chrysalis'},
                 ),
             ])
+        })
+    })
+    describe('addEvent', () => {
+        it('add event posts request with correct body', () => {
+            const spyHttpClient = new SpyHttpClient()
+            const repo = new NetworkEventRepo(spyHttpClient)
+
+            repo.addEvent(
+                new NewWWCEvent('event name', 'event address'))
+
+
+            expect(spyHttpClient.post_argument_url).toEqual('/api/events')
+            expect(spyHttpClient.post_argument_body).toEqual(new NewWWCEvent('event name', 'event address'))
         })
     })
 })

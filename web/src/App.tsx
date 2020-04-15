@@ -6,6 +6,7 @@ import {Route, Router, Switch} from 'react-router-dom'
 import {createBrowserHistory} from 'history'
 import EventDetail from './EventDetail/EventDetail'
 import DefaultWWCRouter from './Router/DefaultWWCRouter'
+import AddEventForm from './EventList/AddEventForm'
 
 function App() {
   const browserHistory = createBrowserHistory()
@@ -19,6 +20,9 @@ function App() {
         <Switch>
           <Route path='/events/:eventId'>
             <EventDetail/>
+          </Route>
+          <Route path='/add-event'>
+            <AddEventForm eventRepo={networkEventRepo}/>
           </Route>
           <Route path='/events'>
             <EventList eventRepo={networkEventRepo}

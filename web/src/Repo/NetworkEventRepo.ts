@@ -1,5 +1,5 @@
 import EventRepo from './EventRepo'
-import WWCEvent from '../Entity/WWCEvent'
+import WWCEvent, {NewWWCEvent} from '../Entity/WWCEvent'
 
 class NetworkEventRepo implements EventRepo {
     private httpClient: HttpClient
@@ -21,6 +21,10 @@ class NetworkEventRepo implements EventRepo {
                     )
                 })
             })
+    }
+
+    addEvent(event: NewWWCEvent): Promise<void> {
+        return Promise.resolve()
     }
 }
 

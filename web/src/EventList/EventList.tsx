@@ -24,6 +24,7 @@ function EventList(props: EventListProps) {
     return (
         <div>
             <h1>Events</h1>
+
             <div>
                 {
                     events.map((event: WWCEvent, i: number) => {

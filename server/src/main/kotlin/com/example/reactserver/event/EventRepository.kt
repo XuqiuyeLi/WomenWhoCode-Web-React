@@ -1,7 +1,9 @@
 package com.example.reactserver.event
 
+import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
 
+@Repository
 class EventRepository {
     private val eventList = listOf(
             Event(

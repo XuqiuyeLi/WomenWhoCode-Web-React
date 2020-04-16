@@ -6,7 +6,7 @@ import {Route, Router, Switch} from 'react-router-dom'
 import {createBrowserHistory} from 'history'
 import EventDetail from './EventDetail/EventDetail'
 import DefaultWWCRouter from './Router/DefaultWWCRouter'
-import AddEventForm from './EventList/AddEventForm'
+import {AddEventForm} from './EventList/AddEventForm'
 
 function App() {
   const browserHistory = createBrowserHistory()

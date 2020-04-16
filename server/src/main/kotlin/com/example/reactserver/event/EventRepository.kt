@@ -1,35 +1,24 @@
 package com.example.reactserver.event
 
 import org.springframework.stereotype.Repository
-import java.time.LocalDateTime
 
 @Repository
 class EventRepository {
-    private val eventList = listOf(
-            Event(
-                    "1",
-                    "WWC first event",
-                    LocalDateTime.of(2020, 6, 2, 19, 30),
-                    LocalDateTime.of(2020, 6, 2, 21, 30),
-                    "WWC event description",
-                    Event.Venue("venueName 1",
-                            "address_1",
-                            "city1")
-            ),
-            Event(
-                    "2",
-                    "WWC second event",
-                    LocalDateTime.of(2021, 6, 2, 19, 30),
-                    LocalDateTime.of(2021, 6, 2, 21, 30),
-                    "WWC second event description",
-                    Event.Venue("venueName 2",
-                            "address_2",
-                            "city2")
-            )
-    )
+    private val eventList = ArrayList<Event>()
 
     fun getAllEvents(): List<Event> {
         return eventList
     }
 
+    fun addEvent(newEvent: NewEvent) {
+        eventList.add(
+                Event(
+                        (eventList.size + 1).toString(),
+                        newEvent.name,
+                        newEvent.startDateTime,
+                        newEvent.endDateTime,
+                        newEvent.description,
+                        newEvent.venueName
+                ))
+    }
 }

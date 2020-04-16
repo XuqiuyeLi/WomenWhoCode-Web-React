@@ -3,41 +3,45 @@ class WWCEvent {
     name: string
     startDateTime: Date
     endDateTime: Date
-    venue: Venue
+    description: string
+    venueName: string
 
     constructor(
         id: string,
         name: string,
         startDateTime: string,
         endDateTime: string,
-        venue: Venue,
+        description: string,
+        venueName: string,
     ) {
         this.id = id
         this.name = name
         this.startDateTime = new Date(startDateTime)
         this.endDateTime = new Date(endDateTime)
-        this.venue = venue
+        this.description = description
+        this.venueName = venueName
     }
 }
 
 export class NewWWCEvent {
     name: string
+    startDateTime: Date
+    endDateTime: Date
+    description: string
     venueName: string
 
     constructor(
         name: string,
-        venueName: string,
+        startDateTime: string,
+        endDateTime: string,
+        description: string,
+        venueName: string
     ) {
         this.name = name
+        this.startDateTime = new Date(startDateTime)
+        this.endDateTime = new Date(endDateTime)
+        this.description = description
         this.venueName = venueName
-    }
-}
-
-export class Venue {
-    name: string
-
-    constructor(name: string) {
-        this.name = name
     }
 }
 

@@ -1,8 +1,5 @@
 import {NetworkHttpClient} from './NetworkEventRepo'
-
-async function flushPromises() {
-    await setImmediate(() => Promise.resolve())
-}
+import {flushPromises} from '../testHelpers/flushPromises'
 
 describe('NetworkHttpClient', () => {
     describe('get', () => {

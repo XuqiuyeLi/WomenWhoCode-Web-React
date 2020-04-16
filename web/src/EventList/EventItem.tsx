@@ -16,7 +16,7 @@ function EventItem(props: EventItemProps) {
             <div className="date">{startDate}</div>
             <div className="title">{event.name}</div>
             <div className="time">{time}</div>
-            <div className="location">{event.venue.name}</div>
+            <div className="location">{event.venueName}</div>
         </div>
     )
 }

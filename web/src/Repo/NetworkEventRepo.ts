@@ -17,7 +17,8 @@ class NetworkEventRepo implements EventRepo {
                         event.name,
                         event.startDateTime,
                         event.endDateTime,
-                        event.venue,
+                        event.description,
+                        event.venueName,
                     )
                 })
             })

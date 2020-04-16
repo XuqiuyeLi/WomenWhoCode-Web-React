@@ -1,17 +1,15 @@
 import {HttpClient} from './NetworkEventRepo'
 
-class StubHttpClient implements HttpClient{
-    set httpFetch_returnValue(value: any) {
-        this._httpFetch_returnValue = value
-    }
-    private _httpFetch_returnValue: any
+class StubHttpClient implements HttpClient {
+    get_returnValue: any
+    post_returnValue: Promise<void> = Promise.resolve()
 
     get(url: string): Promise<any> {
-        return Promise.resolve(this._httpFetch_returnValue)
+        return Promise.resolve(this.get_returnValue)
     }
 
     post(url: string, body: object): Promise<void> {
-        return Promise.resolve();
+        return this.post_returnValue
     }
 }
 

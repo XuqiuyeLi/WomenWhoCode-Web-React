@@ -1,9 +1,8 @@
 package com.example.reactserver.event
 
-import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.hamcrest.Matchers.`is`
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -42,9 +41,7 @@ class EventControllerTest {
                                 LocalDateTime.of(2020, 6, 2, 19, 30),
                                 LocalDateTime.of(2020, 6, 2, 21, 30),
                                 "WWC event description",
-                                Event.Venue("venue name",
-                                        "venue address",
-                                        "Tokyo")
+                                "venue name"
                         )
                 ))
 
@@ -57,8 +54,30 @@ class EventControllerTest {
                 .andExpect(jsonPath("$[0].startDateTime", `is`("2020-06-02T19:30:00")))
                 .andExpect(jsonPath("$[0].endDateTime", `is`("2020-06-02T21:30:00")))
                 .andExpect(jsonPath("$[0].description", `is`("WWC event description")))
-                .andExpect(jsonPath("$[0].venue.name", `is`("venue name")))
-                .andExpect(jsonPath("$[0].venue.address", `is`("venue address")))
-                .andExpect(jsonPath("$[0].venue.city", `is`("Tokyo")))
+                .andExpect(jsonPath("$[0].venueName", `is`("venue name")))
+    }
+
+    @Test
+    fun `add event returns 200 and calls repository with right arguments`() {
+        mvc.perform(MockMvcRequestBuilders
+                .post("/api/events")
+                .content("""{
+                    |"name": "event name", 
+                    |"startDateTime": "2020-06-02T19:30:00", 
+                    |"endDateTime": "2020-06-02T21:30:00",
+                    |"description": "some description",
+                    |"venueName": "venue name"
+                |}""".trimMargin())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk)
+
+
+        verify(repo).addEvent(NewEvent(
+                "event name",
+                LocalDateTime.of(2020, 6, 2, 19, 30),
+                LocalDateTime.of(2020, 6, 2, 21, 30),
+                "some description",
+                "venue name"))
     }
 }

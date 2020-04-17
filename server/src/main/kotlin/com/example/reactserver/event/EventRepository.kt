@@ -1,13 +1,28 @@
 package com.example.reactserver.event
 
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 
 @Repository
-class EventRepository {
+class EventRepository(
+        private val jdbcTemplate: JdbcTemplate
+) {
     private val eventList = ArrayList<Event>()
 
     fun getAllEvents(): List<Event> {
-        return eventList
+        return jdbcTemplate.query(
+                //language=MySQL
+                """SELECT id, name, start_date_time, end_date_time, description, venue_name FROM events;"""
+        ) { rs, _ ->
+            Event(
+                    id = rs.getString("id"),
+                    name = rs.getString("name"),
+                    startDateTime = rs.getTimestamp("start_date_time").toLocalDateTime(),
+                    endDateTime = rs.getTimestamp("end_date_time").toLocalDateTime(),
+                    description = rs.getString("description"),
+                    venueName = rs.getString("venue_name")
+            )
+        }
     }
 
     fun addEvent(newEvent: NewEvent) {
@@ -20,5 +35,17 @@ class EventRepository {
                         newEvent.description,
                         newEvent.venueName
                 ))
+        //language=MySQL
+        jdbcTemplate.update(
+                """INSERT INTO events 
+                    (name, start_date_time, end_date_time, description, venue_name) 
+                    VALUE (?, ?, ?, ?, ?)
+                    """,
+                newEvent.name,
+                newEvent.startDateTime,
+                newEvent.endDateTime,
+                newEvent.description,
+                newEvent.venueName
+        )
     }
 }

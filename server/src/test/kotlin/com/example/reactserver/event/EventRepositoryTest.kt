@@ -3,14 +3,20 @@ package com.example.reactserver.event
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.jdbc.Sql
 import java.time.LocalDateTime
 
+
+@SpringBootTest
+@Sql(scripts = ["classpath:cleardb.sql"])
 class EventRepositoryTest {
-    private lateinit var subject: EventRepository
+    @Autowired
+    lateinit var subject: EventRepository
 
     @Test
     fun `getAllEvents returns an empty list`() {
-        subject = EventRepository()
         val events = subject.getAllEvents()
 
         assertThat(events.size, equalTo(0))
@@ -18,7 +24,6 @@ class EventRepositoryTest {
 
     @Test
     fun `add event saves event`() {
-        subject = EventRepository()
         val event1 = NewEvent(
                 "WWC first event",
                 LocalDateTime.of(2020, 6, 2, 19, 30),
@@ -35,7 +40,6 @@ class EventRepositoryTest {
 
         subject.addEvent(event1)
         subject.addEvent(event2)
-
 
         val eventList = subject.getAllEvents()
         assertThat(eventList.size, equalTo(2))

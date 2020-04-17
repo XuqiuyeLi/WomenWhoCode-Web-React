@@ -10,18 +10,7 @@ class NetworkEventRepo implements EventRepo {
 
     getList(): Promise<WWCEvent[]> {
         return this.httpClient.get('/api/events')
-            .then(events => {
-                return events.map((event: any) => {
-                    return new WWCEvent(
-                        event.id,
-                        event.name,
-                        event.startDateTime,
-                        event.endDateTime,
-                        event.description,
-                        event.venueName,
-                    )
-                })
-            })
+            .then(events => events.map(WWCEvent.fromJSON))
     }
 
     addEvent(event: NewWWCEvent): Promise<void> {
@@ -29,6 +18,11 @@ class NetworkEventRepo implements EventRepo {
             '/api/events',
             event,
         )
+    }
+
+    getEvent(eventId: string): Promise<WWCEvent> {
+        return this.httpClient.get(`/api/events/${eventId}`)
+            .then(WWCEvent.fromJSON)
     }
 }
 

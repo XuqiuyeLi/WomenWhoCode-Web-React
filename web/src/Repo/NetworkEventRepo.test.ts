@@ -3,6 +3,7 @@ import SpyHttpClient from './SpyHttpClient'
 import WWCEvent, {NewWWCEvent} from '../Entity/WWCEvent'
 import StubHttpClient from './StubHttpClient'
 import {flushPromises} from '../testHelpers/flushPromises'
+import {createWWCEvent} from '../testHelpers/createEntities'
 
 describe('NetworkEventRepo', () => {
     describe('getList', () => {
@@ -12,19 +13,19 @@ describe('NetworkEventRepo', () => {
 
             repo.getList()
 
-            expect(spyHttpClient.request_argument_url).toBe('/api/events')
+            expect(spyHttpClient.get_argument_url).toBe('/api/events')
         })
 
         it('returns an array of WWCEvents', async () => {
             const stubHttpClient = new StubHttpClient()
-            stubHttpClient.get_returnValue = [{
+            stubHttpClient.get_returnValue = Promise.resolve([{
                 id: '1',
                 name: 'First Event',
-                startDateTime: '2020-04-11T09:00:00',
-                endDateTime: '2020-04-11T20:00:00',
+                startDateTime: '2020-04-11T09:00:00Z',
+                endDateTime: '2020-04-11T20:00:00Z',
                 description: 'event description',
                 venueName: 'Code Chrysalis',
-            }]
+            }])
 
             const repo = new NetworkEventRepo(stubHttpClient)
 
@@ -34,14 +35,57 @@ describe('NetworkEventRepo', () => {
                 new WWCEvent(
                     '1',
                     'First Event',
-                    '2020-04-11T09:00:00',
-                    '2020-04-11T20:00:00',
+                    new Date('2020-04-11T09:00:00Z'),
+                    new Date('2020-04-11T20:00:00Z'),
                     'event description',
                     'Code Chrysalis',
                 ),
             ])
         })
     })
+
+    describe('getEvent', () => {
+        it('get event makes get request with event id', () => {
+            const spyHttpClient = new SpyHttpClient()
+            const repo = new NetworkEventRepo(spyHttpClient)
+
+
+            repo.getEvent('event100')
+
+
+            expect(spyHttpClient.get_argument_url).toEqual('/api/events/event100')
+        })
+
+        it('get event with id returns an event', async () => {
+            const stubHttpClient = new StubHttpClient()
+            stubHttpClient.get_returnValue = Promise.resolve(
+                {
+                    id: '100',
+                    name: 'event100',
+                    startDateTime: '2020-04-11T17:00:00',
+                    endDateTime: '2020-04-11T21:00:00',
+                    description: 'event100 description',
+                    venueName: 'Minato-ku',
+                })
+            const repo = new NetworkEventRepo(stubHttpClient)
+
+
+            const event: WWCEvent = await repo.getEvent('event100')
+
+
+            expect(event).toEqual(
+                createWWCEvent({
+                    id: '100',
+                    name: 'event100',
+                    startDateTime: new Date('2020-04-11T17:00:00'),
+                    endDateTime: new Date('2020-04-11T21:00:00'),
+                    description: 'event100 description',
+                    venueName: 'Minato-ku',
+                }),
+            )
+        })
+    })
+
     describe('addEvent', () => {
         const newWWCEvent = new NewWWCEvent(
             'Event name',

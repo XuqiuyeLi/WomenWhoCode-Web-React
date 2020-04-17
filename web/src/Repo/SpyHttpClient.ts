@@ -1,12 +1,12 @@
 import {HttpClient} from './NetworkEventRepo'
 
 class SpyHttpClient implements HttpClient{
-    request_argument_url: string = ''
+    get_argument_url: string = ''
     post_argument_url: string = ''
     post_argument_body?: object
 
     get(url: string): Promise<any> {
-        this.request_argument_url = url
+        this.get_argument_url = url
         return Promise.resolve([])
     }
 

@@ -1,6 +1,7 @@
 package com.example.reactserver.event
 
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -56,5 +57,46 @@ class EventRepositoryTest {
         assertThat(eventList[1].endDateTime, equalTo(LocalDateTime.of(2021, 6, 2, 21, 30)))
         assertThat(eventList[1].description, equalTo("WWC event description 2"))
         assertThat(eventList[1].venueName, equalTo("venue name 2"))
+    }
+
+    @Test
+    fun `getEventById returns the event with matching id`() {
+        val event1 = NewEvent(
+                "WWC first event",
+                LocalDateTime.of(2020, 6, 2, 19, 30),
+                LocalDateTime.of(2020, 6, 2, 21, 30),
+                "WWC event description",
+                "venue name")
+        val event2 = NewEvent(
+                "WWC second event",
+                LocalDateTime.of(2021, 6, 2, 19, 30),
+                LocalDateTime.of(2021, 6, 2, 21, 30),
+                "WWC event description 2",
+                "venue name 2")
+        subject.addEvent(event1)
+        subject.addEvent(event2)
+
+
+        val eventWithId2 = subject.getEventById("2")
+
+
+        assertThat(eventWithId2.id, equalTo("2"))
+        assertThat(eventWithId2.name, equalTo("WWC second event"))
+        assertThat(eventWithId2.startDateTime, equalTo(LocalDateTime.of(2021, 6, 2, 19, 30)))
+        assertThat(eventWithId2.endDateTime, equalTo(LocalDateTime.of(2021, 6, 2, 21, 30)))
+        assertThat(eventWithId2.description, equalTo("WWC event description 2"))
+        assertThat(eventWithId2.venueName, equalTo("venue name 2"))
+    }
+
+    @Test
+    fun `getEventById throws error if event with matching id not found`() {
+        var thrownException: EventNotFoundException? = null
+        try {
+            subject.getEventById("100")
+        } catch (e: EventNotFoundException) {
+            thrownException = e
+        }
+
+        assertThat(thrownException, notNullValue())
     }
 }

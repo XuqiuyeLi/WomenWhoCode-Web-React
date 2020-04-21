@@ -1,5 +1,6 @@
 package com.example.reactserver.event
 
+import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
 import org.hamcrest.Matchers.`is`
@@ -45,6 +46,7 @@ class EventControllerTest {
                         )
                 ))
 
+
         mvc.perform(MockMvcRequestBuilders
                 .get("/api/events")
                 .accept(MediaType.APPLICATION_JSON))
@@ -55,6 +57,45 @@ class EventControllerTest {
                 .andExpect(jsonPath("$[0].endDateTime", `is`("2020-06-02T21:30:00")))
                 .andExpect(jsonPath("$[0].description", `is`("WWC event description")))
                 .andExpect(jsonPath("$[0].venueName", `is`("venue name")))
+    }
+
+    @Test
+    fun `get event by id returns the event with same id`() {
+        whenever(repo.getEventById("event100")).thenReturn(
+                Event(
+                        "event100",
+                        "Event Name",
+                        LocalDateTime.of(2020, 6, 2, 19, 30),
+                        LocalDateTime.of(2020, 6, 2, 21, 30),
+                        "Event Description",
+                        "Venue Name"
+                )
+        )
+
+
+        mvc.perform(MockMvcRequestBuilders
+                .get("/api/events/event100")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id", `is`("event100")))
+                .andExpect(jsonPath("$.name", `is`("Event Name")))
+                .andExpect(jsonPath("$.startDateTime", `is`("2020-06-02T19:30:00")))
+                .andExpect(jsonPath("$.endDateTime", `is`("2020-06-02T21:30:00")))
+                .andExpect(jsonPath("$.description", `is`("Event Description")))
+                .andExpect(jsonPath("$.venueName", `is`("Venue Name")))
+    }
+
+    @Test
+    fun `get event by id returns status 404 if no event found`() {
+        whenever(repo.getEventById("EventNotExisted"))
+                .doAnswer {
+                    throw EventNotFoundException()
+                }
+
+
+        mvc.perform(MockMvcRequestBuilders
+                .get("/api/events/EventNotExisted")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound)
     }
 
     @Test

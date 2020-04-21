@@ -48,4 +48,23 @@ class EventRepository(
                 newEvent.venueName
         )
     }
+
+    fun getEventById(id: String): Event {
+        return jdbcTemplate.query(
+                //language=MySQL
+                """SELECT id, name, start_date_time, end_date_time, description, venue_name FROM events WHERE id = ?;""",
+                arrayOf<Any>(id)
+        ) { rs, _ ->
+            Event(
+                    id = rs.getString("id"),
+                    name = rs.getString("name"),
+                    startDateTime = rs.getTimestamp("start_date_time").toLocalDateTime(),
+                    endDateTime = rs.getTimestamp("end_date_time").toLocalDateTime(),
+                    description = rs.getString("description"),
+                    venueName = rs.getString("venue_name")
+            )
+        }.firstOrNull() ?: throw EventNotFoundException()
+    }
 }
+
+class EventNotFoundException : Throwable("Event not found")

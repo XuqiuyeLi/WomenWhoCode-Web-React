@@ -21,7 +21,7 @@ dependencies {
 	runtimeOnly("mysql:mysql-connector-java")
 	implementation("org.flywaydb:flyway-core:6.3.3")
 
-//	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")

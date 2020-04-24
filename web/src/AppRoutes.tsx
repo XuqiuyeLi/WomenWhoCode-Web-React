@@ -4,17 +4,23 @@ import {AddEventForm} from './EventList/AddEventForm'
 import EventList from './EventList/EventList'
 import React from 'react'
 import EventRepo from './Repo/EventRepo'
-import WWCRouter from './Router/WWCRouter'
+import Login from './ Authentication/Login'
+import AuthRepo from './ Authentication/AuthRepo'
 
-interface AppRoutesProps {
+export interface AppRoutesProps {
     eventRepo: EventRepo
-    wwcRouter: WWCRouter
+    authRepo: AuthRepo
 }
 
 export function AppRoutes(props: AppRoutesProps) {
-    const {eventRepo, wwcRouter} = props
+    const {eventRepo, authRepo} = props
     return (
         <Switch>
+            <Route
+                path='/login'
+            >
+                <Login authRepo={authRepo}/>
+            </Route>
             <Route
                 path='/events/:eventId'
             >
@@ -24,12 +30,10 @@ export function AppRoutes(props: AppRoutesProps) {
                 <AddEventForm eventRepo={eventRepo}/>
             </Route>
             <Route path='/events'>
-                <EventList eventRepo={eventRepo}
-                           router={wwcRouter}/>
+                <EventList eventRepo={eventRepo}/>
             </Route>
-            <Route path='/'>
-                <EventList eventRepo={eventRepo}
-                           router={wwcRouter}/>
+            <Route exact path='/'>
+                <EventList eventRepo={eventRepo}/>
             </Route>
         </Switch>
     )

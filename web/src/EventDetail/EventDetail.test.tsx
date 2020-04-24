@@ -8,6 +8,7 @@ import StubEventRepo from '../Repo/StubEventRepo'
 import {createWWCEvent} from '../testHelpers/createEntities'
 import {act} from 'react-dom/test-utils'
 import EventRepo from '../Repo/EventRepo'
+import {renderPathInRouter} from '../testHelpers/renderPathInRouter'
 
 describe('EventDetail', () => {
     it('calls repo with correct event id', async () => {
@@ -22,15 +23,15 @@ describe('EventDetail', () => {
 
     it('calls repo with the updated event id when route changes', async () => {
         const spyEventRepo = new SpyEventRepo()
-        let memoryHistory = createMemoryHistory({
+        const memoryHistory = createMemoryHistory({
             initialEntries: ['/events/react-event'],
         })
-
+        const allPropsAsDummies = {} as any
         render(
             <Router history={memoryHistory}>
                 <AppRoutes
+                    {...allPropsAsDummies}
                     eventRepo={spyEventRepo}
-                    wwcRouter={{} as any}
                 />
             </Router>,
         )
@@ -60,9 +61,5 @@ describe('EventDetail', () => {
 })
 
 function renderEventDetailInRouter(id: string, eventRepo: EventRepo) {
-    render(
-        <StaticRouter location={`/events/${id}`}>
-            <AppRoutes eventRepo={eventRepo} wwcRouter={{} as any}/>
-        </StaticRouter>,
-    )
+    renderPathInRouter(`/events/${id}`, {eventRepo: eventRepo})
 }

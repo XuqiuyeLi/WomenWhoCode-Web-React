@@ -1,28 +1,29 @@
 import React from 'react'
-import {render, screen, wait, fireEvent} from '@testing-library/react'
+import {fireEvent, screen, wait} from '@testing-library/react'
 import EventList from './EventList'
 import {waitForElement} from '@testing-library/dom'
 import StubEventRepo from '../Repo/StubEventRepo'
-import SpyWWCRouter from '../Router/SpyWWCRouter'
+import {renderPathInRouter} from '../testHelpers/renderPathInRouter'
+import {StaticRouterContext} from 'react-router'
 
 describe('EventList', () => {
     let stubEventRepo: StubEventRepo
-    let spyRouter:SpyWWCRouter
 
     beforeEach(() => {
             stubEventRepo = new StubEventRepo()
-            spyRouter = new SpyWWCRouter()
-        }
+        },
     )
 
     it('displays the events title', async () => {
-        render(<EventList eventRepo={stubEventRepo} router={spyRouter}/>)
+        renderPathInRouter('/', {eventRepo: stubEventRepo})
+
 
         await wait(() => expect(screen.getByText('Events')).toBeInTheDocument())
     })
 
     it('displays events', async () => {
-        render(<EventList eventRepo={stubEventRepo} router={spyRouter}/>)
+        renderPathInRouter('/', {eventRepo: stubEventRepo})
+
 
         await waitForElement(() => screen.getByText('First Event'))
 
@@ -32,12 +33,15 @@ describe('EventList', () => {
     })
 
     it('click on event item shows event details', async () => {
-        render(<EventList eventRepo={stubEventRepo} router={spyRouter}/>)
+        const context: StaticRouterContext = {}
+        renderPathInRouter('/', {eventRepo: stubEventRepo}, context)
         await waitForElement(() => screen.getByText('First Event'))
+
 
         const eventTitleElement = screen.getByText('First Event')
         fireEvent.click(eventTitleElement)
 
-        expect(spyRouter.redirectToEventDetailsPage_calledWith).toEqual('111')
+
+        expect(context.url).toEqual('/events/111')
     })
 })

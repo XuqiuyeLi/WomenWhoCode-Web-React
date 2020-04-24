@@ -1,5 +1,5 @@
-import {NetworkHttpClient} from './NetworkEventRepo'
 import {flushPromises} from '../testHelpers/flushPromises'
+import {NetworkHttpClient} from './NetworkHttpClient'
 
 describe('NetworkHttpClient', () => {
     describe('get', () => {
@@ -61,10 +61,10 @@ describe('NetworkHttpClient', () => {
         })
 
         it('does not resolve if fetch never resolves', async () => {
-            const spyFetch = jest.fn()
+            const stubFetch = jest.fn()
             const promiseThatNeverResolves = new Promise(() => undefined)
-            spyFetch.mockReturnValue(promiseThatNeverResolves)
-            const subject = new NetworkHttpClient(spyFetch)
+            stubFetch.mockReturnValue(promiseThatNeverResolves)
+            const subject = new NetworkHttpClient(stubFetch)
 
 
             let postHasResolved = false
@@ -80,13 +80,80 @@ describe('NetworkHttpClient', () => {
 
 
         it('resolves if fetch resolves', async () => {
-            const spyFetch = jest.fn()
-            spyFetch.mockResolvedValue(new Response(''))
-            const subject = new NetworkHttpClient(spyFetch)
+            const stubFetch = jest.fn()
+            stubFetch.mockResolvedValue(new Response(''))
+            const subject = new NetworkHttpClient(stubFetch)
 
 
             let postHasResolved = false
             subject.post('', {})
+                .then(() => postHasResolved = true)
+            await flushPromises()
+
+
+            expect(postHasResolved).toBe(true)
+        })
+    })
+
+    describe('postForm', () => {
+        it('post form with right url, headers and body', () => {
+            const spyFetch = jest.fn()
+            spyFetch.mockResolvedValue(new Response(''))
+            const subject = new NetworkHttpClient(spyFetch)
+            const formData = new FormData()
+            formData.append('key', 'value')
+
+
+            subject.postForm('/some/url', formData)
+
+
+            expect(spyFetch).toBeCalledWith('/some/url', {
+                method: 'POST',
+                body: formData
+            })
+        })
+
+        it('reject if the response is Unauthorized', async () => {
+            const stubFetch = jest.fn()
+            stubFetch.mockResolvedValue(new Response('', {status: 401}))
+            const subject = new NetworkHttpClient(stubFetch)
+
+
+            let postHasRejected = false
+            subject.postForm('', new FormData())
+                .catch(() => postHasRejected = true)
+            await flushPromises()
+
+
+            expect(postHasRejected).toBe(true)
+        })
+
+        it('does not resolve if fetch never resolves', async () => {
+            const stubFetch = jest.fn()
+            const promiseThatNeverResolves = new Promise(() => undefined)
+            stubFetch.mockReturnValue(promiseThatNeverResolves)
+            const subject = new NetworkHttpClient(stubFetch)
+
+
+            let postHasResolved = false
+            subject.postForm('', new FormData())
+                .then(() => {
+                    postHasResolved = true
+                })
+            await flushPromises()
+
+
+            expect(postHasResolved).toEqual(false)
+        })
+
+        it('resolves if fetch resolves', async () => {
+            const stubFetch = jest.fn()
+            stubFetch.mockResolvedValue(new Response(''))
+            const subject = new NetworkHttpClient(stubFetch)
+
+
+            let postHasResolved = false
+            subject.postForm('', new FormData())
                 .then(() => postHasResolved = true)
             await flushPromises()
 

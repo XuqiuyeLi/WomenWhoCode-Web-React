@@ -1,5 +1,6 @@
 import EventRepo from './EventRepo'
 import WWCEvent, {NewWWCEvent} from '../Entity/WWCEvent'
+import {HttpClient} from './HttpClient'
 
 class NetworkEventRepo implements EventRepo {
     private httpClient: HttpClient
@@ -23,40 +24,6 @@ class NetworkEventRepo implements EventRepo {
     getEvent(eventId: string): Promise<WWCEvent> {
         return this.httpClient.get(`/api/events/${eventId}`)
             .then(WWCEvent.fromJSON)
-    }
-}
-
-export interface HttpClient {
-    get(url: string): Promise<any>
-
-    post(url: string, body: object): Promise<void>
-}
-
-export class NetworkHttpClient implements HttpClient {
-    private fetch: (input: RequestInfo, init?: RequestInit) => Promise<Response>
-
-    constructor(fetch: (input: RequestInfo, init?: RequestInit) => Promise<Response>) {
-        this.fetch = fetch
-    }
-
-    get(url: string): Promise<any> {
-        return this.fetch(url, {
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-        })
-            .then(res => res.json())
-    }
-
-    post(url: string, body: object): Promise<void> {
-        return this.fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(body),
-        }).then()
     }
 }
 

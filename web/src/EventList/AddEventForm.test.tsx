@@ -9,6 +9,7 @@ import {StaticRouterContext} from 'react-router'
 import {act, Simulate} from 'react-dom/test-utils'
 import EventRepo from '../Repo/EventRepo'
 import StubEventRepo from '../Repo/StubEventRepo'
+import {renderPathInRouter} from '../testHelpers/renderPathInRouter'
 
 describe('AddEventForm', () => {
     const dummyRepo = {} as any
@@ -103,9 +104,5 @@ describe('AddEventForm', () => {
 })
 
 function renderAddEventForm(eventRepo: EventRepo, context: StaticRouterContext = {}) {
-    render(
-        <StaticRouter context={context}>
-            <AddEventForm eventRepo={eventRepo}/>
-        </StaticRouter>,
-    )
+    renderPathInRouter("/add-event", {eventRepo}, context)
 }

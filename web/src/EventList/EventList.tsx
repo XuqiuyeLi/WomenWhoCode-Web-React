@@ -2,11 +2,10 @@ import React, {useEffect, useState} from 'react'
 import WWCEvent from '../Entity/WWCEvent'
 import EventRepo from '../Repo/EventRepo'
 import EventItem from './EventItem'
-import WWCRouter from '../Router/WWCRouter'
+import {Link} from 'react-router-dom'
 
 type EventListProps = {
     eventRepo: EventRepo,
-    router: WWCRouter
 }
 
 function EventList(props: EventListProps) {
@@ -17,23 +16,20 @@ function EventList(props: EventListProps) {
             .then(events => setEvents(events))
     }, [props.eventRepo])
 
-    const eventClicked = (eventId: string) => {
-        props.router.redirectToEventDetailsPage(eventId)
-    }
-
     return (
         <div>
             <h1>Events</h1>
 
             <div>
                 {
-                    events.map((event: WWCEvent, i: number) => {
-                        return (
-                            <div key={i} onClick={() => eventClicked(event.id)}>
-                                <EventItem event={event}/>
-                            </div>
-                        )
-                    })
+                    events.map((event: WWCEvent) => (
+                        <Link
+                            to={`/events/${event.id}`}
+                            key={event.id}
+                        >
+                            <EventItem event={event}/>
+                        </Link>
+                    ))
                 }
             </div>
         </div>

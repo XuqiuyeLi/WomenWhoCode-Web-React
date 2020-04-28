@@ -6,3 +6,6 @@ run:
 
 test:
 	./gradlew test
+
+run-e2e-test-server:
+	SPRING_PROFILES_ACTIVE=e2e ./gradlew bootRun

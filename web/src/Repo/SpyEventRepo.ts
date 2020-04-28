@@ -6,6 +6,7 @@ export class SpyEventRepo implements EventRepo {
     addEvent_Was_Called = false
     addEvent_argument_event?: NewWWCEvent
     getEvent_argument_id?: string
+    deleteEvent_argument_eventId?: string
 
     addEvent(event: NewWWCEvent): Promise<void> {
         this.addEvent_argument_event = event
@@ -22,6 +23,11 @@ export class SpyEventRepo implements EventRepo {
 
     getList(): Promise<WWCEvent[]> {
         return Promise.resolve([])
+    }
+
+    deleteEvent(eventId: string): Promise<void> {
+        this.deleteEvent_argument_eventId = eventId
+        return Promise.resolve()
     }
 }
 

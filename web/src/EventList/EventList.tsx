@@ -11,10 +11,17 @@ type EventListProps = {
 function EventList(props: EventListProps) {
     const [events, setEvents] = useState<WWCEvent[]>([])
 
-    useEffect(() => {
+    useEffect(loadEvents, [props.eventRepo])
+
+    function loadEvents() {
         props.eventRepo.getList()
             .then(events => setEvents(events))
-    }, [props.eventRepo])
+    }
+
+    function handleRemoveOnClick(eventId: string) {
+        props.eventRepo.deleteEvent(eventId)
+            .then(loadEvents)
+    }
 
     return (
         <div>
@@ -23,11 +30,12 @@ function EventList(props: EventListProps) {
             <div>
                 {
                     events.map((event: WWCEvent) => (
-                        <Link
-                            to={`/events/${event.id}`}
-                            key={event.id}
+                        <Link style={{textDecoration: 'none'}}
+                              to={`/events/${event.id}`}
+                              key={event.id}
                         >
                             <EventItem event={event}/>
+                            <button onClick={() => handleRemoveOnClick(event.id)}>Remove</button>
                         </Link>
                     ))
                 }

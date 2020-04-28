@@ -25,6 +25,10 @@ class NetworkEventRepo implements EventRepo {
         return this.httpClient.get(`/api/events/${eventId}`)
             .then(WWCEvent.fromJSON)
     }
+
+    deleteEvent(eventId: string): Promise<void> {
+        throw Error('Not Implemented')
+    }
 }
 
 export default NetworkEventRepo

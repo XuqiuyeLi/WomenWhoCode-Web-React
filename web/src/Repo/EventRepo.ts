@@ -6,6 +6,8 @@ interface EventRepo {
     addEvent(event: NewWWCEvent): Promise<void>
 
     getEvent(eventId: string): Promise<WWCEvent>
+
+    deleteEvent(eventId: string): Promise<void>
 }
 
 export default EventRepo

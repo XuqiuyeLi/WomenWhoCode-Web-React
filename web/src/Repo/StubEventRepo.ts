@@ -5,6 +5,7 @@ import {createWWCEvent} from '../testHelpers/createEntities'
 class StubEventRepo implements EventRepo {
     addEvent_returnValue: Promise<void> = Promise.resolve()
     getEvent_returnValue: Promise<WWCEvent> = Promise.resolve(createWWCEvent({}))
+    deleteEvent_returnValue: Promise<void> = Promise.resolve()
 
     getList(): Promise<any> {
         return Promise.resolve([
@@ -24,6 +25,10 @@ class StubEventRepo implements EventRepo {
 
     getEvent(eventId: string): Promise<WWCEvent> {
         return this.getEvent_returnValue
+    }
+
+    deleteEvent(eventId: string): Promise<void> {
+        return this.deleteEvent_returnValue
     }
 }
 

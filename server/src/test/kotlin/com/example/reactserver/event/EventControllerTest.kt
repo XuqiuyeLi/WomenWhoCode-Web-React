@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.time.LocalDateTime
+import javax.sql.DataSource
 
 @WebMvcTest
 class EventControllerTest {
@@ -23,6 +24,9 @@ class EventControllerTest {
 
     @MockBean
     private lateinit var repo: EventRepository
+
+    @MockBean
+    private lateinit var dataSource: DataSource
 
     @Test
     fun `get all events returns 200`() {

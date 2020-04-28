@@ -1,8 +1,7 @@
-# noinspection SqlWithoutWhereForFile
+SET FOREIGN_KEY_CHECKS = 0;
 
-delete
-from authorities;
-delete
-from users;
-delete
-from events;
+TRUNCATE TABLE authorities;
+TRUNCATE TABLE users;
+TRUNCATE TABLE events;
+
+SET FOREIGN_KEY_CHECKS = 1;

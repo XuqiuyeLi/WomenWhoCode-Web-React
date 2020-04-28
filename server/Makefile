@@ -3,3 +3,6 @@ seed-local-db:
 
 run:
 	./gradlew bootRun
+
+test:
+	./gradlew test

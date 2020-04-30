@@ -1,4 +1,4 @@
-describe('Add New Event Scenario', () => {
+describe('Add a new event', () => {
   before(() => {
     cy.task('queryDB', 'DELETE FROM `events`')
   })
@@ -13,22 +13,50 @@ describe('Add New Event Scenario', () => {
     cy.contains('Description').type('Some test description')
     cy.contains('Submit').click()
   }
+  describe('failed if user not logged in', () => {
+    it('Add event should redirect user to login page', () => {
+      createNewEvent()
 
-  it('Add and show added event', () => {
-    createNewEvent()
 
+      cy.url().should('eq', 'http://localhost:3000/login')
+    })
+
+    it('event should not be created', () => {
+      cy.visit('http://localhost:3000/')
+
+
+      cy.contains('Test Event').should('not.exist')
+    })
+  })
+
+  function login() {
+    cy.visit('http://localhost:3000/login')
+    cy.contains('username').type('foo')
+    cy.contains('password').type('bar')
+    cy.contains('Submit').click()
 
     cy.url().should('eq', 'http://localhost:3000/')
-    cy.contains('Test Event')
-  })
+  }
 
-  it('Show new event details', () => {
+  function showEventDetails() {
     cy.contains('Test Event').click({force: true})
+  }
 
+  describe('succeeded if user already logged in', () => {
+    it('User log in successful and can add event', () => {
+      login()
 
-    cy.url().should('match', /^http:\/\/localhost:3000\/events\/\w+$/)
-    cy.contains('EventDetail')
-    cy.contains('Test Event')
-    cy.contains('Some test description')
+      createNewEvent()
+
+      cy.url().should('eq', 'http://localhost:3000/')
+
+      showEventDetails()
+
+      cy.url().should('match', /^http:\/\/localhost:3000\/events\/\w+$/)
+      cy.contains('EventDetail')
+      cy.contains('Test Event')
+      cy.contains('Some test description')
+    })
   })
 })
+

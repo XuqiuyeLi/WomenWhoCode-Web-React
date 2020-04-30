@@ -3,6 +3,7 @@ package com.example.reactserver.event
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 
+
 @Repository
 class EventRepository(
         private val jdbcTemplate: JdbcTemplate
@@ -64,6 +65,10 @@ class EventRepository(
                     venueName = rs.getString("venue_name")
             )
         }.firstOrNull() ?: throw EventNotFoundException()
+    }
+
+    fun deleteEventById(id: String) {
+        jdbcTemplate.update("""DELETE FROM events WHERE id = ?""", id)
     }
 }
 

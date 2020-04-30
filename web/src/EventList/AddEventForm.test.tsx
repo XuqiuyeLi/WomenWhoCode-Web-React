@@ -90,6 +90,20 @@ describe('AddEventForm', () => {
         expect(routerContext.url).toEqual(undefined)
     })
 
+    it('redirects to login if user not logged in', async () => {
+        const routerContext: StaticRouterContext = {}
+        const stubEventRepo = new StubEventRepo()
+        stubEventRepo.addEvent_returnValue = Promise.reject()
+        renderAddEventForm(stubEventRepo, routerContext)
+
+
+        await act(async () => {
+            await userEvent.click(screen.getByText('Submit'))
+        })
+
+        expect(routerContext.url).toEqual('/login')
+    })
+
     it('submit form event default is prevented', () => {
         renderAddEventForm(new SpyEventRepo())
 

@@ -4,4 +4,6 @@ export interface HttpClient {
     post(url: string, body: object): Promise<void>
 
     postForm(url: string, body: FormData): Promise<void>
+
+    delete(url: string): Promise<void>
 }

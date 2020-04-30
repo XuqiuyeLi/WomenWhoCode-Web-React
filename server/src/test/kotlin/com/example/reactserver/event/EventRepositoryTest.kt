@@ -16,6 +16,19 @@ class EventRepositoryTest {
     @Autowired
     lateinit var subject: EventRepository
 
+    val event1 = NewEvent(
+            "WWC first event",
+            LocalDateTime.of(2020, 6, 2, 19, 30),
+            LocalDateTime.of(2020, 6, 2, 21, 30),
+            "WWC event description",
+            "venue name")
+    val event2 = NewEvent(
+            "WWC second event",
+            LocalDateTime.of(2021, 6, 2, 19, 30),
+            LocalDateTime.of(2021, 6, 2, 21, 30),
+            "WWC event description 2",
+            "venue name 2")
+
     @Test
     fun `getAllEvents returns an empty list`() {
         val events = subject.getAllEvents()
@@ -25,22 +38,9 @@ class EventRepositoryTest {
 
     @Test
     fun `add event saves event`() {
-        val event1 = NewEvent(
-                "WWC first event",
-                LocalDateTime.of(2020, 6, 2, 19, 30),
-                LocalDateTime.of(2020, 6, 2, 21, 30),
-                "WWC event description",
-                "venue name")
-        val event2 = NewEvent(
-                "WWC second event",
-                LocalDateTime.of(2021, 6, 2, 19, 30),
-                LocalDateTime.of(2021, 6, 2, 21, 30),
-                "WWC event description 2",
-                "venue name 2")
-
-
         subject.addEvent(event1)
         subject.addEvent(event2)
+
 
         val eventList = subject.getAllEvents()
         assertThat(eventList.size, equalTo(2))
@@ -61,18 +61,6 @@ class EventRepositoryTest {
 
     @Test
     fun `getEventById returns the event with matching id`() {
-        val event1 = NewEvent(
-                "WWC first event",
-                LocalDateTime.of(2020, 6, 2, 19, 30),
-                LocalDateTime.of(2020, 6, 2, 21, 30),
-                "WWC event description",
-                "venue name")
-        val event2 = NewEvent(
-                "WWC second event",
-                LocalDateTime.of(2021, 6, 2, 19, 30),
-                LocalDateTime.of(2021, 6, 2, 21, 30),
-                "WWC event description 2",
-                "venue name 2")
         subject.addEvent(event1)
         subject.addEvent(event2)
 
@@ -98,5 +86,24 @@ class EventRepositoryTest {
         }
 
         assertThat(thrownException, notNullValue())
+    }
+
+    @Test
+    fun `deleteEventById deletes event with matching id`() {
+        subject.addEvent(event1)
+        subject.addEvent(event2)
+
+
+        subject.deleteEventById("2")
+
+
+        var thrownException: EventNotFoundException? = null
+        try {
+            subject.getEventById("2")
+        } catch (e: EventNotFoundException) {
+            thrownException = e
+        }
+        assertThat(thrownException, notNullValue())
+        assertThat(subject.getAllEvents().size, equalTo(1))
     }
 }

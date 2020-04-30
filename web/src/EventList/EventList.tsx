@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import WWCEvent from '../Entity/WWCEvent'
 import EventRepo from '../Repo/EventRepo'
 import EventItem from './EventItem'
-import {Link} from 'react-router-dom'
+import {Link, useHistory} from 'react-router-dom'
 
 type EventListProps = {
     eventRepo: EventRepo,
@@ -10,6 +10,7 @@ type EventListProps = {
 
 function EventList(props: EventListProps) {
     const [events, setEvents] = useState<WWCEvent[]>([])
+    const history = useHistory()
 
     useEffect(loadEvents, [props.eventRepo])
 
@@ -21,6 +22,7 @@ function EventList(props: EventListProps) {
     function handleRemoveOnClick(eventId: string) {
         props.eventRepo.deleteEvent(eventId)
             .then(loadEvents)
+            .catch(() => history.push('/login'))
     }
 
     return (
@@ -30,13 +32,13 @@ function EventList(props: EventListProps) {
             <div>
                 {
                     events.map((event: WWCEvent) => (
-                        <Link style={{textDecoration: 'none'}}
-                              to={`/events/${event.id}`}
-                              key={event.id}
-                        >
-                            <EventItem event={event}/>
-                            <button onClick={() => handleRemoveOnClick(event.id)}>Remove</button>
-                        </Link>
+                      <div key={event.id}>
+                          <Link style={{textDecoration: 'none'}}
+                                to={`/events/${event.id}`}>
+                              <EventItem event={event}/>
+                          </Link>
+                          <button onClick={() => handleRemoveOnClick(event.id)}>Remove</button>
+                      </div>
                     ))
                 }
             </div>

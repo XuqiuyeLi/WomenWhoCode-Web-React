@@ -27,7 +27,7 @@ class NetworkEventRepo implements EventRepo {
     }
 
     deleteEvent(eventId: string): Promise<void> {
-        throw Error('Not Implemented')
+        return this.httpClient.delete(`/api/events/${eventId}`)
     }
 }
 

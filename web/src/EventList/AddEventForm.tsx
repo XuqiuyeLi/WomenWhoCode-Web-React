@@ -24,6 +24,7 @@ export function AddEventForm(props: AddEventFormProps) {
         const event = new NewWWCEvent(name, startDateTime, endDateTime, description, address)
         props.eventRepo.addEvent(event)
             .then(() => history.push('/'))
+            .catch(() => history.push('/login'))
     }
 
     return (

@@ -60,6 +60,25 @@ describe('NetworkHttpClient', () => {
             })
         })
 
+        it('rejects if response is forbidden', async () => {
+            const spyFetch = jest.fn()
+            spyFetch.mockResolvedValue(new Response('', {status: 403}))
+            const subject = new NetworkHttpClient(spyFetch)
+
+
+            let postHasRejected = false
+            subject.post(
+                '/some/url',
+                {
+                    name: 'event name',
+                },
+            ).catch(() => postHasRejected = true)
+            await flushPromises()
+
+
+            expect(postHasRejected).toEqual(true)
+        })
+
         it('does not resolve if fetch never resolves', async () => {
             const stubFetch = jest.fn()
             const promiseThatNeverResolves = new Promise(() => undefined)
@@ -161,4 +180,40 @@ describe('NetworkHttpClient', () => {
             expect(postHasResolved).toBe(true)
         })
     })
+
+    describe('delete', () => {
+        it('calls fetch with the right url and headers', () => {
+            const spyFetch = jest.fn()
+            spyFetch.mockResolvedValue(new Response('{}'))
+            const subject = new NetworkHttpClient(spyFetch)
+
+
+            subject.delete(
+                '/some/url/eventId',
+            )
+
+
+            expect(spyFetch).toBeCalledWith('/some/url/eventId', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+        })
+
+        it('rejects if delete not successful', async () => {
+                const stubFetch = jest.fn()
+                stubFetch.mockResolvedValue(new Response('', {status: 401}))
+                const subject = new NetworkHttpClient(stubFetch)
+
+
+                let deleteHasRejected = false
+                subject.delete('/some/url/eventId')
+                    .catch(() => deleteHasRejected = true)
+                await flushPromises()
+
+
+                expect(deleteHasRejected).toBe(true)
+            })
+        })
 })

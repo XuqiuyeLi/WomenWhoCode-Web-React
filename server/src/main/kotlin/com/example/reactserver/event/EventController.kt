@@ -21,6 +21,11 @@ class EventController(val repository: EventRepository) {
         }
     }
 
+    @DeleteMapping("api/events/{id}")
+    fun deleteEvent(@PathVariable id: String) {
+        repository.deleteEventById(id)
+    }
+
     @PostMapping("/api/events")
     fun addEvent(@RequestBody newEvent: NewEvent) {
         repository.addEvent(newEvent)

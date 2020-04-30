@@ -144,4 +144,17 @@ describe('NetworkEventRepo', () => {
             expect(addEventHasResolved).toBe(true)
         })
     })
+
+    describe('deleteEvent', () => {
+        it('delete event sends delete request with correct body', () => {
+            const spyHttpClient = new SpyHttpClient()
+            const repo = new NetworkEventRepo(spyHttpClient)
+
+
+            repo.deleteEvent('1')
+
+
+            expect(spyHttpClient.delete_argument_url).toEqual('/api/events/1')
+        })
+    })
 })

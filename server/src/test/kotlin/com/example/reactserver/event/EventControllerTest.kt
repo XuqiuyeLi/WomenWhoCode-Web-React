@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -103,9 +104,26 @@ class EventControllerTest {
     }
 
     @Test
+    fun `add event returns status 403 forbidden if user not logged in`() {
+        mvc.perform(MockMvcRequestBuilders
+                .post("/api/events")
+                .content("""{
+                    |"name": "event name", 
+                    |"startDateTime": "2020-06-02T19:30:00", 
+                    |"endDateTime": "2020-06-02T21:30:00",
+                    |"description": "some description",
+                    |"venueName": "venue name"
+                |}""".trimMargin())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden)
+    }
+
+    @Test
     fun `add event returns 200 and calls repository with right arguments`() {
         mvc.perform(MockMvcRequestBuilders
                 .post("/api/events")
+                .with(user("user"))
                 .content("""{
                     |"name": "event name", 
                     |"startDateTime": "2020-06-02T19:30:00", 
@@ -124,5 +142,24 @@ class EventControllerTest {
                 LocalDateTime.of(2020, 6, 2, 21, 30),
                 "some description",
                 "venue name"))
+    }
+
+    @Test
+    fun `delete event returns status 403 forbidden if user not logged in`() {
+        mvc.perform(MockMvcRequestBuilders
+                .delete("/api/events/event100")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden)
+    }
+
+    @Test
+    fun `delete event returns 200 and calls repository with right arguments`() {
+        mvc.perform(MockMvcRequestBuilders
+                .delete("/api/events/event100")
+                .with(user("user"))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk)
+
+        verify(repo).deleteEventById("event100")
     }
 }

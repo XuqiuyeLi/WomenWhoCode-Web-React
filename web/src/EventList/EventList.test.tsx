@@ -50,16 +50,19 @@ describe('EventList', () => {
 
     describe('deleting an event', () => {
         let spyEventRepo: Sinon.SinonStubbedInstance<NetworkEventRepo>
+        let routerContext: StaticRouterContext
         const firstWWCEvent = createWWCEvent({id: '111', name: 'First Event'})
         const secondWWCEvent = createWWCEvent({id: '222', name: 'Second Event'})
+
         beforeEach(async () => {
             spyEventRepo = Sinon.createStubInstance(NetworkEventRepo)
             spyEventRepo.getList.resolves([
                 firstWWCEvent,
                 secondWWCEvent,
             ])
+            routerContext = {}
             await act(async () => {
-                renderPathInRouter('/', {eventRepo: spyEventRepo})
+                renderPathInRouter('/', {eventRepo: spyEventRepo}, routerContext)
             })
         })
 
@@ -70,21 +73,41 @@ describe('EventList', () => {
             Sinon.assert.calledWith(spyEventRepo.deleteEvent, '111')
         })
 
-        it('when an event is removed, reload the events', async () => {
-            spyEventRepo.deleteEvent.resolves()
-            spyEventRepo.getList.resolves([secondWWCEvent])
-            await clickRemoveButtonForFirstEvent()
+        describe('when the delete succeeds', () => {
+            beforeEach(() => {
+                spyEventRepo.deleteEvent.resolves()
+            })
 
-            expect(screen.queryByText('First Event')).not.toBeInTheDocument()
-            expect(screen.queryByText('Second Event')).toBeInTheDocument()
+            it('when an event is removed, reload the events', async () => {
+                spyEventRepo.getList.resolves([secondWWCEvent])
+
+
+                await clickRemoveButtonForFirstEvent()
+
+
+                expect(screen.queryByText('First Event')).not.toBeInTheDocument()
+                expect(screen.queryByText('Second Event')).toBeInTheDocument()
+            })
+
+            it('Page does not change', async () => {
+                spyEventRepo.getList.resolves([])
+
+
+                await clickRemoveButtonForFirstEvent()
+
+
+                expect(routerContext.url).toEqual(undefined)
+            })
         })
 
-        it('when an event is removed but repo doesn\'t respond, don\'t reload the events', async () => {
-            spyEventRepo.deleteEvent.returns(new Promise(() => undefined))
-            spyEventRepo.getList.resolves([])
+        it('redirects to login page if user not logged in', async () => {
+            spyEventRepo.deleteEvent.rejects()
+
+
             await clickRemoveButtonForFirstEvent()
 
-            expect(screen.queryByText('First Event')).toBeInTheDocument()
+
+            expect(routerContext.url).toEqual('/login')
         })
 
         async function clickRemoveButtonForFirstEvent() {

@@ -2,6 +2,7 @@ package com.example.reactserver
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -17,6 +18,17 @@ class WebSecurityConfig(
     override fun configure(http: HttpSecurity) {
         http.csrf().disable()
 
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/api/events").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/events/*").authenticated()
+                .anyRequest().permitAll()
+
+        http.exceptionHandling()
+                .authenticationEntryPoint { _, response, _ ->
+                    response.sendError(HttpStatus.FORBIDDEN.value())
+                }
+
+
         http.formLogin()
                 .successHandler { _, response, _ ->
                     response.status = HttpStatus.OK.value()
@@ -25,6 +37,7 @@ class WebSecurityConfig(
                     response.status = HttpStatus.UNAUTHORIZED.value()
                 }
                 .loginProcessingUrl("/api/login")
+                .permitAll()
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {

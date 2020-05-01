@@ -34,4 +34,15 @@ describe('NetworkAuthRepo', () => {
 
         expect(promiseRejected).toEqual(true)
     })
+
+    it('logout makes post request with empty body', () => {
+        const spyHttpClient = new SpyHttpClient()
+        const repo = new NetworkAuthRepo(spyHttpClient)
+
+
+        repo.logout()
+
+
+        expect(spyHttpClient.post_argument_url).toEqual('/api/logout')
+    })
 })

@@ -38,6 +38,13 @@ class WebSecurityConfig(
                 }
                 .loginProcessingUrl("/api/login")
                 .permitAll()
+
+        http.logout()
+                .logoutUrl("/api/logout")
+                .logoutSuccessHandler { _, response, _ ->
+                    response.status = HttpStatus.OK.value()
+                }
+                .permitAll()
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {

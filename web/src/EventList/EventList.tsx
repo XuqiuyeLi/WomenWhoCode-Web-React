@@ -3,9 +3,12 @@ import WWCEvent from '../Entity/WWCEvent'
 import EventRepo from '../Repo/EventRepo'
 import EventItem from './EventItem'
 import {Link, useHistory} from 'react-router-dom'
+import AuthRepo from '../ Authentication/AuthRepo'
+import './EventList.scss'
 
 type EventListProps = {
     eventRepo: EventRepo,
+    authRepo: AuthRepo
 }
 
 function EventList(props: EventListProps) {
@@ -25,8 +28,17 @@ function EventList(props: EventListProps) {
             .catch(() => history.push('/login'))
     }
 
+    function handleLogoutOnClick() {
+        props.authRepo.logout()
+    }
+
     return (
-        <div>
+        <div className="EventList">
+            <button className="Logout"
+                    onClick={handleLogoutOnClick}
+            >
+                Log out
+            </button>
             <h1>Events</h1>
 
             <div>
@@ -34,10 +46,15 @@ function EventList(props: EventListProps) {
                     events.map((event: WWCEvent) => (
                       <div key={event.id}>
                           <Link style={{textDecoration: 'none'}}
-                                to={`/events/${event.id}`}>
+                                to={`/events/${event.id}`}
+                          >
                               <EventItem event={event}/>
                           </Link>
-                          <button onClick={() => handleRemoveOnClick(event.id)}>Remove</button>
+                          <button className="Remove"
+                                  onClick={() => handleRemoveOnClick(event.id)}
+                          >
+                              Remove
+                          </button>
                       </div>
                     ))
                 }

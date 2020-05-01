@@ -17,7 +17,7 @@ export class NetworkHttpClient implements HttpClient {
             .then(res => res.json())
     }
 
-    post(url: string, body: object): Promise<void> {
+    post(url: string, body: object | null): Promise<void> {
         return this.fetch(url, {
             method: 'POST',
             headers: {
@@ -25,7 +25,7 @@ export class NetworkHttpClient implements HttpClient {
             },
             body: JSON.stringify(body),
         }).then((response) => {
-            if(response.status === 403) {
+            if (response.status === 403) {
                 throw Error('Forbidden')
             }
         })
@@ -34,9 +34,9 @@ export class NetworkHttpClient implements HttpClient {
     postForm(url: string, body: FormData): Promise<void> {
         return this.fetch(url, {
             method: 'POST',
-            body: body
+            body: body,
         }).then((response) => {
-            if(response.status === 401) {
+            if (response.status === 401) {
                 throw Error('Unauthorized')
             }
         })
@@ -47,9 +47,9 @@ export class NetworkHttpClient implements HttpClient {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-            }
+            },
         }).then((response) => {
-            if(!response.ok) {
+            if (!response.ok) {
                 throw Error('Event could not be removed')
             }
         })

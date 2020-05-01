@@ -19,7 +19,9 @@ export function AppRoutes(props: AppRoutesProps) {
             <Route
                 path='/login'
             >
-                <Login authRepo={authRepo}/>
+                <Login
+                    authRepo={authRepo}
+                />
             </Route>
             <Route
                 path='/events/:eventId'
@@ -30,10 +32,16 @@ export function AppRoutes(props: AppRoutesProps) {
                 <AddEventForm eventRepo={eventRepo}/>
             </Route>
             <Route path='/events'>
-                <EventList eventRepo={eventRepo}/>
+                <EventList
+                    eventRepo={eventRepo}
+                    authRepo={authRepo}
+                />
             </Route>
             <Route exact path='/'>
-                <EventList eventRepo={eventRepo}/>
+                <EventList
+                    eventRepo={eventRepo}
+                    authRepo={authRepo}
+                />
             </Route>
         </Switch>
     )

@@ -15,4 +15,8 @@ export class NetworkAuthRepo implements AuthRepo {
 
         return this.httpClient.postForm('/api/login', loginFormData)
     }
+
+    logout(): Promise<void> {
+        return this.httpClient.post('/api/logout', null)
+    }
 }

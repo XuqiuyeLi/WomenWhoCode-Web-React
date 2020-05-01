@@ -18,7 +18,7 @@ function EventDetail(props: EventDetailProps) {
 
     return (
         <div>
-            EventDetail
+            <h2>EventDetail</h2>
             <div>{eventDetail?.name}</div>
             <div>{eventDetail?.description}</div>
         </div>

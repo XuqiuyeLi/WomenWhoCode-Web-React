@@ -5,14 +5,15 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 
 @RestController
+@RequestMapping("/api/events")
 class EventController(val repository: EventRepository) {
 
-    @GetMapping("/api/events")
+    @GetMapping
     fun getAllEvents(): List<Event> {
         return repository.getAllEvents()
     }
 
-    @GetMapping("/api/events/{id}")
+    @GetMapping("{id}")
     fun getEvent(@PathVariable id: String): Event {
         try {
             return repository.getEventById(id)
@@ -21,12 +22,12 @@ class EventController(val repository: EventRepository) {
         }
     }
 
-    @DeleteMapping("api/events/{id}")
+    @DeleteMapping("{id}")
     fun deleteEvent(@PathVariable id: String) {
         repository.deleteEventById(id)
     }
 
-    @PostMapping("/api/events")
+    @PostMapping
     fun addEvent(@RequestBody newEvent: NewEvent) {
         repository.addEvent(newEvent)
     }

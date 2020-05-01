@@ -1,5 +1,4 @@
-import {fireEvent, screen, wait} from '@testing-library/react'
-import {waitForElement} from '@testing-library/dom'
+import {fireEvent, screen} from '@testing-library/react'
 import StubEventRepo from '../Repo/StubEventRepo'
 import {renderPathInRouter} from '../testHelpers/renderPathInRouter'
 import {StaticRouterContext} from 'react-router'
@@ -7,6 +6,7 @@ import Sinon from 'sinon'
 import NetworkEventRepo from '../Repo/NetworkEventRepo'
 import {createWWCEvent} from '../testHelpers/createEntities'
 import {act} from 'react-dom/test-utils'
+import SpyAuthRepo from '../ Authentication/SpyAuthRepo'
 
 describe('EventList', () => {
     let stubEventRepo: StubEventRepo
@@ -17,28 +17,38 @@ describe('EventList', () => {
     )
 
     it('displays the events title', async () => {
-        renderPathInRouter('/', {eventRepo: stubEventRepo})
+        await renderPathInRouter('/', {eventRepo: stubEventRepo})
 
 
-        await wait(() => expect(screen.getByText('Events')).toBeInTheDocument())
+        expect(screen.getByText('Events')).toBeInTheDocument()
     })
 
     it('displays events', async () => {
-        renderPathInRouter('/', {eventRepo: stubEventRepo})
+        await renderPathInRouter('/', {eventRepo: stubEventRepo})
 
 
-        await waitForElement(() => screen.getByText('First Event'))
-
+        expect(screen.getByText('First Event')).toBeInTheDocument()
         expect(screen.getByText('Code Chrysalis')).toBeInTheDocument()
         expect(screen.getByText('Apr 11, Sat')).toBeInTheDocument()
         expect(screen.getByText('9:00 AM - 5:30 PM')).toBeInTheDocument()
         expect(screen.getByText('Remove')).toBeInTheDocument()
     })
 
+    it('click on log out button log user out', async () => {
+        const spyAuthRepo = new SpyAuthRepo()
+        await renderPathInRouter('/', {eventRepo: stubEventRepo, authRepo: spyAuthRepo})
+
+
+        const logoutButton = screen.getByText('Log out', {selector: 'button'})
+        fireEvent.click(logoutButton)
+
+
+        expect(spyAuthRepo.logout_was_called).toEqual(true)
+    })
+
     it('click on event item shows event details', async () => {
         const context: StaticRouterContext = {}
-        renderPathInRouter('/', {eventRepo: stubEventRepo}, context)
-        await waitForElement(() => screen.getByText('First Event'))
+        await renderPathInRouter('/', {eventRepo: stubEventRepo}, context)
 
 
         const eventTitleElement = screen.getByText('First Event')
@@ -61,9 +71,7 @@ describe('EventList', () => {
                 secondWWCEvent,
             ])
             routerContext = {}
-            await act(async () => {
-                renderPathInRouter('/', {eventRepo: spyEventRepo}, routerContext)
-            })
+            await renderPathInRouter('/', {eventRepo: spyEventRepo}, routerContext)
         })
 
         it('click on remove button calls the repo to delete event', async () => {
